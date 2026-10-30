@@ -1,0 +1,7 @@
+# Codex profile: cheap tier for UI strings / short copy.
+# Install: cp i18n-translator.config.toml ~/.codex/   then: codex exec -p i18n-translator "<prompt>"
+# Model names change: pick the model ~/.codex/models_cache.json describes as fast/affordable.
+model = "gpt-6-luna"
+model_reasoning_effort = "low"
+sandbox_mode = "workspace-write"
+approval_policy = "never"

@@ -1,0 +1,78 @@
+# .github/workflows/i18n.yml: i18n guardrails (website-i18n skill template).
+# Adjust paths, node version and the lint command to the project.
+# Translation in CI needs an LLM or MT API key as a secret. Without one, the
+# translate job opens nothing and only reports what is pending.
+name: i18n
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    paths: ['src/messages/en.json', 'i18n/glossary.json']
+  schedule:
+    - cron: '0 6 * * 1'   # weekly, Monday 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: i18n-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - name: Message files (parity, placeholders, brand names)
+        run: node scripts/i18n/i18n-messages.mjs check --config i18n.config.json
+      - name: Hardcoded strings in changed files
+        run: |
+          CHANGED=$(git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD -- '*.tsx' '*.jsx' | tr '\n' ' ')
+          if [ -n "$CHANGED" ]; then
+            npx eslint --no-warn-ignored --rule '{"react/jsx-no-literals": ["error", {"noStrings": true, "ignoreProps": true}]}' $CHANGED
+          fi
+      # For Vue/Svelte/Astro use instead:
+      # - run: node scripts/i18n/i18n-scan-hardcoded.mjs src --baseline .i18n/hardcoded-baseline.json --fail-on-new
+
+  translate:
+    if: github.event_name == 'push' && !startsWith(github.event.head_commit.message, 'chore(i18n)')
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: node scripts/i18n/i18n-messages.mjs prep --config i18n.config.json
+      # Translate each job with your provider. Example with a small script that
+      # sends job JSON + agents/i18n-translator.md as the system prompt to a
+      # cheap model, and writes .i18n/out/<job>.json:
+      # - run: node scripts/i18n/translate-jobs.mjs
+      #   env: { ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }} }
+      - name: Apply (validates, merges, records hashes)
+        run: node scripts/i18n/i18n-messages.mjs apply --config i18n.config.json || echo "rejects present, see .i18n/rejects"
+      - run: node scripts/i18n/i18n-messages.mjs check --config i18n.config.json
+      - name: Commit translations
+        run: |
+          # Use an identity your deploy platform accepts (e.g. Vercel author verification).
+          git config user.name  "${{ vars.I18N_BOT_NAME }}"
+          git config user.email "${{ vars.I18N_BOT_EMAIL }}"
+          git add src/messages .i18n/source-hashes.json
+          git diff --cached --quiet || (git commit -m "chore(i18n): sync translations" && git push)
+
+  weekly-verify:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Live site hreflang / canonical / rendering
+        run: node scripts/i18n/i18n-verify-site.mjs --sitemap ${{ vars.SITE_URL }}/sitemap.xml --limit 60 --negotiation --report i18n-verify.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: i18n-verify, path: i18n-verify.md }

@@ -1,0 +1,8 @@
+# Codex profile: read-only audit. The auditor writes only I18N-CHECKLIST.md;
+# with a read-only sandbox, have it print the checklist and let the orchestrator save it,
+# or use workspace-write and rely on the prompt's "no other changes" rule.
+# Install: cp i18n-auditor.config.toml ~/.codex/   then: codex exec -p i18n-auditor "<prompt>"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+approval_policy = "never"

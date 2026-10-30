@@ -1,0 +1,46 @@
+{
+  "$comment": "Single source for locale codes and i18n tooling. Keep in sync with the framework's i18n config (or generate that config from this file).",
+  "siteUrl": "https://example.com",
+  "sourceLocale": "en",
+  "defaultLocalePrefixed": false,
+  "trailingSlash": false,
+  "xDefault": "en",
+  "locales": [
+    { "code": "en", "lang": "en",      "hreflang": "en",      "ogLocale": "en_US", "label": "English",   "englishName": "English",              "dir": "ltr", "tier": 0 },
+    { "code": "fr", "lang": "fr",      "hreflang": "fr",      "ogLocale": "fr_FR", "label": "Français",  "englishName": "French",               "dir": "ltr", "tier": 1 },
+    { "code": "de", "lang": "de",      "hreflang": "de",      "ogLocale": "de_DE", "label": "Deutsch",   "englishName": "German",               "dir": "ltr", "tier": 1 },
+    { "code": "es", "lang": "es",      "hreflang": "es",      "ogLocale": "es_ES", "label": "Español",   "englishName": "Spanish",              "dir": "ltr", "tier": 2 },
+    { "code": "pt", "lang": "pt-BR",   "hreflang": "pt",      "ogLocale": "pt_BR", "label": "Português", "englishName": "Portuguese (Brazil)",  "dir": "ltr", "tier": 2 },
+    { "code": "ja", "lang": "ja",      "hreflang": "ja",      "ogLocale": "ja_JP", "label": "日本語",     "englishName": "Japanese",             "dir": "ltr", "tier": 1 },
+    { "code": "zh", "lang": "zh-Hans", "hreflang": "zh-Hans", "ogLocale": "zh_CN", "label": "简体中文",   "englishName": "Chinese (Simplified)", "dir": "ltr", "tier": 2 },
+    { "code": "ar", "lang": "ar",      "hreflang": "ar",      "ogLocale": "ar_AE", "label": "العربية",    "englishName": "Arabic",               "dir": "rtl", "tier": 3 }
+  ],
+  "messages": {
+    "pattern": "src/messages/{locale}.json",
+    "skipKeysMatching": "^_",
+    "context": "i18n/context.json"
+  },
+  "docs": {
+    "source": "content/blog/en",
+    "target": "content/blog/{locale}",
+    "translateFrontmatter": ["title", "description", "excerpt", "summary"]
+  },
+  "glossary": "i18n/glossary.json",
+  "stateDir": ".i18n",
+  "fallback": "404",
+  "negotiation": "none",
+  "slugs": "mirrored",
+  "translation": {
+    "engine": "llm-subagent",
+    "tiers": {
+      "fast":     { "claude": "haiku",  "codex": "gpt-6-luna",  "use": "UI strings, meta, alt text, short CMS fields" },
+      "balanced": { "claude": "sonnet", "codex": "gpt-6.1-sol", "use": "blog/CMS long-form, legal, retries of rejects" }
+    },
+    "batchSize": 80,
+    "maxBatchChars": 12000,
+    "longformThreshold": 400,
+    "maxLengthRatio": 3,
+    "allowIdentical": ["OK", "Email", "Blog"],
+    "replace": {}
+  }
+}

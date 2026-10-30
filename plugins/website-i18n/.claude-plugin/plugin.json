@@ -1,0 +1,6 @@
+{
+  "name": "website-i18n",
+  "description": "Make any website multilingual: audit first, one approved step at a time, plain-language explanations, SSR + hreflang + localized sitemaps, cheap validated translation, brand names never translated.",
+  "author": { "name": "FlytBase Marketing" },
+  "keywords": ["i18n", "translation", "hreflang", "seo", "localization"]
+}

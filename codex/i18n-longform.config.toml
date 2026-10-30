@@ -1,0 +1,6 @@
+# Codex profile: balanced tier for blog/CMS long-form and retries of rejects.
+# Install: cp i18n-longform.config.toml ~/.codex/   then: codex exec -p i18n-longform "<prompt>"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "low"
+sandbox_mode = "workspace-write"
+approval_policy = "never"

@@ -1,0 +1,25 @@
+{
+  "$comment": "Never-translate terms are copied exactly in every locale. 'allow' lists owner-approved native-script spellings per locale (optional). 'terms' forces one translation per concept. 'style' is the voice guide per locale. Proposed by the audit, approved by the site owner.",
+  "doNotTranslate": [
+    "ExampleBrand",
+    "ExampleProduct Pro",
+    { "term": "ExampleBrand Cloud", "allow": { "ja": ["エグザンプルブランド クラウド"] }, "note": "Katakana approved by JP marketing on YYYY-MM-DD" },
+    "ISO 27001",
+    "SOC 2"
+  ],
+  "terms": {
+    "fr": { "dashboard": "tableau de bord", "AI": "IA" },
+    "de": { "dashboard": "Dashboard" },
+    "es": { "AI": "IA" }
+  },
+  "style": {
+    "default": "Professional B2B. Clear and concise. No exclamation marks. Keep UI labels short.",
+    "fr": "Vouvoiement.",
+    "de": "Sie-Form.",
+    "es": "Usted. Neutral Spanish (no regionalisms).",
+    "pt": "Brazilian Portuguese, você.",
+    "ja": "Desu/masu form, business tone.",
+    "zh": "Simplified Chinese, mainland business register.",
+    "ar": "Modern Standard Arabic, formal."
+  }
+}

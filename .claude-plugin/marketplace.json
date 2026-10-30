@@ -1,0 +1,12 @@
+{
+  "name": "flytbase-website-i18n",
+  "description": "FlytBase website i18n skill and agents",
+  "owner": { "name": "FlytBase Marketing" },
+  "plugins": [
+    {
+      "name": "website-i18n",
+      "source": "./plugins/website-i18n",
+      "description": "Audit-first website i18n: checklist, SSR routing, hreflang, sitemaps, cheap validated translation, brands never translated."
+    }
+  ]
+}
